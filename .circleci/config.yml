@@ -194,6 +194,10 @@ jobs:
       - checkout
       - add_ssh_keys:
             fingerprints: ["87:e4:60:ea:c1:7a:43:89:66:e5:ba:ac:97:ef:2f:85"] 
+      - run : 
+            name :  installing tar and  gzip
+            command : |
+              yum install -y tar gzip
       - attach_workspace:
           at: ~/
       - run:
