@@ -35,5 +35,4 @@
 
 
   roles:
-    - preparing 
-    - installing_dependncies
+    - configure-server
