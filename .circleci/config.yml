@@ -9,7 +9,6 @@ commands:
       stack_id:
         type: string 
         default :  ${CIRCLE_WORKFLOW_ID:0:7}
-      # Add parameter here   
     steps:
       - run:
           name: Destroy environments
@@ -155,6 +154,11 @@ jobs:
         - image : amazon/aws-cli
       steps : 
         - checkout 
+        - run : 
+            name :  installing tar and  gzip
+            command : |
+              yum install -y tar gzip
+            
         - run:
             name: Ensure back-end infrastructure exists
             command: |
