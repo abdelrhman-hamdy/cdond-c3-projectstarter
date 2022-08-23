@@ -189,7 +189,7 @@ jobs:
         - destroy-environment
   configure-infrastructure:
     docker : 
-      - image : python:3.7-alpine3.11
+      - image : amazon/aws-cli #python:3.7-alpine3.11
     steps : 
       - checkout
       - add_ssh_keys:
@@ -197,15 +197,15 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: Install Ansible
+          name: Install Ansible #apk add --update ansible
           command: |
-            apk add --update ansible 
-      - run : cat project/.circleci/ansible/inventory.txt
-      - run : cat project/.circleci/ansible/configure-server.yml
+           yum install -y ansible   
+      - run : cat .circleci/ansible/inventory.txt
+      - run : cat .circleci/ansible/configure-server.yml
       - run:
           name: Run Playbook and Configure server
           command: |
-              ansible-playbook -i project/.circleci/ansible/inventory.txt  .circleci/ansible/configure-server.yml
+              ansible-playbook -i .circleci/ansible/inventory.txt  .circleci/ansible/configure-server.yml
       - destroy-environment
 workflows:
   default:
@@ -237,8 +237,8 @@ workflows:
             - test-backend
           context:
               - Udapeople
-      - deploy-infrastructure :
-            requires : [scan-frontend, scan-backend]
+      - deploy-infrastructure 
+            #requires : [scan-frontend, scan-backend]
       - configure-infrastructure : 
           requires: 
             - deploy-infrastructure
