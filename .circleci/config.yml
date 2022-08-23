@@ -1,4 +1,6 @@
 version: 2.1
+orbs: 
+  slack: circleci/slack@4.10.1
 jobs:
   build-frontend:
     docker:
@@ -13,6 +15,9 @@ jobs:
             cd frontend
             npm install
             npm run build
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
             
       #- save_cache:
       #    paths: [frontend/node_modules]
@@ -31,6 +36,9 @@ jobs:
             cd backend 
             npm install 
             npm run build
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
   test-frontend : 
     docker : 
       - image: circleci/node:13.8.0
@@ -42,6 +50,9 @@ jobs:
             cd frontend
             npm install 
             npm run test
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
   
   test-backend : 
     docker : 
@@ -54,6 +65,9 @@ jobs:
             cd backend
             npm install 
             npm run test
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
   scan-frontend : 
     docker : 
       - image: circleci/node:13.8.0
@@ -66,6 +80,9 @@ jobs:
             npm install 
             npm audit fix --audit-level=critical --force
             npm audit --audit-level=critical  
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 
   scan-backend :  
     docker : 
@@ -80,6 +97,9 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --force
             npm audit --audit-level=critical
+      - slack/notify:
+          event: pass
+          template:  success_tagged_deploy_1
         #- save_cache:
         #    paths: [backend/node_modules]
         #    key: backend-build
@@ -87,18 +107,31 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
+      - build-frontend :
+          context:
+              - Udapeople 
+
+      - build-backend :
+          context:
+              - Udapeople
       - test-frontend : 
             requires : 
             - build-frontend 
+            context:
+              - Udapeople
       - test-backend : 
             requires : 
             - build-backend
+            context:
+              - Udapeople
       - scan-frontend : 
           requires : 
             - test-frontend 
+          context:
+              - Udapeople
       - scan-backend : 
           requires : 
             - test-backend
+          context:
+              - Udapeople
 
