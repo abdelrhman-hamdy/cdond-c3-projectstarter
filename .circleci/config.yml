@@ -99,7 +99,21 @@ jobs:
             npm audit --audit-level=critical
       - slack/notify:
           event: pass
-          template:  success_tagged_deploy_1
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "plain_text",
+                      "text": "*Congratulations, the CI pipline ran Succefully !! *",
+                      "emoji": true
+                    }
+                  ]
+                }
+              ]
+            }
         #- save_cache:
         #    paths: [backend/node_modules]
         #    key: backend-build
