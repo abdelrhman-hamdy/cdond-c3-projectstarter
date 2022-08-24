@@ -234,9 +234,10 @@ jobs:
       - image : amazon/aws-cli
     steps:
       - checkout 
-      #- run:
-      #    name: Install dependencies
-      #    command: |
+      - run:
+          name: Install dependencies
+          command: |
+              yum install -y nodejs npm
               
       - run:
           name: Get backend url IMP to see the echos
@@ -247,6 +248,8 @@ jobs:
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             cat frontend/.env
+      - attach_workspace:
+          at: ~/
       - run:
           name: Deploy frontend objects
           command: |
