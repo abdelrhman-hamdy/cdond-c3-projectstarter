@@ -291,5 +291,8 @@ workflows:
       - configure-infrastructure : 
           requires: 
             - deploy-infrastructure
+      - deploy-frontend :
+          requires : 
+            - configure-infrastructure
 
 
