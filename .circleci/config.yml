@@ -241,7 +241,7 @@ jobs:
       - run:
           name: Get backend url IMP to see the echos
           command: |
-            export BACKEND_IP = $(aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            export BACKEND_IP=$(aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
             echo "API_URL = ${API_URL}"
