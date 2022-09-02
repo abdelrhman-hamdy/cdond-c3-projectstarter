@@ -237,7 +237,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-              yum install -y nodejs npm
+              curl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash -
+              yum install -y nodejs --enablerepo=nodesource
               
       - run:
           name: Get backend url IMP to see the echos
