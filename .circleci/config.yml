@@ -261,6 +261,40 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment     
+  deploy-backend: 
+      docker:
+      - image : amazon/aws-cli
+      steps : 
+       - run: 
+          name: installing Ansible 
+          command : |
+                amazon-linux-extras install -y epel
+                yum install ansible -y --enablerepo=epel
+                yum install -y  gzip tar
+                curl -sL "https://rpm.nodesource.com/setup_12.x"  | bash -
+                yum install -y nodejs --enablerepo=nodesource
+       - add_ssh_keys:
+           fingerprints: ["87:e4:60:ea:c1:7a:43:89:66:e5:ba:ac:97:ef:2f:85"]
+       - attach_workspace:
+          at: ~/
+       - run :
+          name :  deploy backend object 
+          command :   
+            cd backend 
+            npm i
+            npm run build
+            tar -C backend -czvf artifact.tar.gz 
+            cd ..
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            scp artifact.tar.gz ubunto@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
+            ansible-playbook -i inventory.txt deploy-backend.yml
+
+
+        
+       
+       
 workflows:
   default:
     jobs:
