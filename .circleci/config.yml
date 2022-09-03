@@ -285,11 +285,11 @@ jobs:
               npm i
               npm run build
               cd ..
-              tar -C backend -czvf .circleci/ansible/artifact.tar.gz
+              tar  -czvf .circleci/ansible/artifact.tar.gz backend
               cd .circleci/ansible
               echo "Contents  of the inventory.txt file is -------"
               cat inventory.txt
-              scp artifact.tar.gz ubunto@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
+              scp artifact.tar.gz ubuntu@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
               ansible-playbook -i inventory.txt deploy-backend.yml
 
 
