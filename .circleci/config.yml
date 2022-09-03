@@ -280,16 +280,16 @@ jobs:
        - run :
           name :  deploy backend object 
           command : |
-            cd backend 
-            npm i
-            npm run build
-            tar -C backend -czvf artifact.tar.gz 
-            cd ..
-            cd .circleci/ansible
-            echo "Contents  of the inventory.txt file is -------"
-            cat inventory.txt
-            scp artifact.tar.gz ubunto@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
-            ansible-playbook -i inventory.txt deploy-backend.yml
+              cd backend/
+              npm i
+              npm run build
+              tar -C backend -czvf artifact.tar.gz 
+              cd ..
+              cd .circleci/ansible
+              echo "Contents  of the inventory.txt file is -------"
+              cat inventory.txt
+              scp artifact.tar.gz ubunto@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
+              ansible-playbook -i inventory.txt deploy-backend.yml
 
 
         
@@ -298,43 +298,6 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend :
-          context:
-              - Udapeople 
-
-      - build-backend :
-          context:
-              - Udapeople
-      - test-frontend : 
-            requires : 
-            - build-frontend 
-            context:
-              - Udapeople
-      - test-backend : 
-            requires : 
-            - build-backend
-            context:
-              - Udapeople
-      - scan-frontend : 
-          requires : 
-            - test-frontend 
-          context:
-              - Udapeople
-      - scan-backend : 
-          requires : 
-            - test-backend
-          context:
-              - Udapeople
-      - deploy-infrastructure 
-            #requires : [scan-frontend, scan-backend]
-      - configure-infrastructure : 
-          requires: 
-            - deploy-infrastructure
-      - deploy-frontend :
-          requires : 
-            - configure-infrastructure
-      - deploy-backend : 
-          requires:
-            - deploy-frontend
+      - deploy-backend
 
 
