@@ -244,6 +244,7 @@ jobs:
               yum install -y nodejs --enablerepo=nodesource
               yum install -y tar gzip
               
+              
       - run:
           name: Get backend url IMP to see the echos
           command: |
@@ -277,6 +278,7 @@ jobs:
                 yum install -y  gzip tar
                 curl -sL "https://rpm.nodesource.com/setup_12.x"  | bash -
                 yum install -y nodejs --enablerepo=nodesource
+                yum install -y openssh-clients openssh
        - add_ssh_keys:
            fingerprints: ["87:e4:60:ea:c1:7a:43:89:66:e5:ba:ac:97:ef:2f:85"]
        - attach_workspace:
@@ -290,9 +292,10 @@ jobs:
               cd ..
               tar  -czvf .circleci/ansible/artifact.tar.gz backend
               cd .circleci/ansible
+              aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
               echo "Contents  of the inventory.txt file is -------"
               cat inventory.txt
-              scp artifact.tar.gz ubuntu@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
+              scp -r backend ubuntu@$(tail -1 inventory.txt):/home/ubuntu/backend
               ansible-playbook -i inventory.txt deploy-backend.yml
 
 
