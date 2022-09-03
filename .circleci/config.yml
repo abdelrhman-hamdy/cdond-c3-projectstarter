@@ -222,7 +222,10 @@ jobs:
           command: |
             cd backend
             npm install
-      - run : npm run migrations > migrations_dump.txt
+      - run :
+          command: |
+            cd backend
+            npm run migrations > migrations_dump.txt
       - run:
           name: Send migration results to memstash
           command: |
