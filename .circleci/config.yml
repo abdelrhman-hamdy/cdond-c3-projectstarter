@@ -295,7 +295,8 @@ jobs:
               aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
               echo "Contents  of the inventory.txt file is -------"
               cat inventory.txt
-              scp artifact.tar.gz ubuntu@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
+              scp -o "StrictHostKeyChecking=no" artifact.tar.gz ubuntu@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
+              
               ansible-playbook -i inventory.txt deploy-backend.yml
 
 
