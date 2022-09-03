@@ -214,15 +214,9 @@ jobs:
       - destroy-environment
   run-migrations:
     docker:
-      - image:  amazon/aws-cli
+      - image:  circleci/node:13.8.0
     steps:
       - checkout
-      - run:
-           name :  Install nodejs
-           command : |
-               curl -sL "https://rpm.nodesource.com/setup_12.x"  | bash -
-               yum install -y nodejs --enablerepo=nodesource
-
       - run:
           name: Run migrations
           command: |
@@ -230,6 +224,7 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
             npm run build
+            cat "-------------------------- hamdy hamdy --------------------------------------"
             npm run migrations > migration.log
             cat migration.log
      
