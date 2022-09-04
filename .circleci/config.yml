@@ -14,6 +14,7 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/*
             aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.stack_id >>
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.stack_id >>
 
@@ -314,7 +315,7 @@ jobs:
             curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
             unzip awscli-bundle.zip
             ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-          
+      -run : aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/*     
       - run:
           name: Backend smoke test.
           command: |
@@ -339,7 +340,7 @@ jobs:
               else
                 return 1
               fi
-      # Here's where you will add some code to rollback on failure  
+      
 
         
        
