@@ -292,15 +292,15 @@ jobs:
               npm i
               npm run build
               cd ..
-              tar  -czvf .circleci/ansible/artifact.tar.gz backend
+              mkdir .circleci/ansible/roles/deploy/files
+              tar  -czvf .circleci/ansible/roles/deploy/files/artifact.tar.gz backend
               cd .circleci/ansible
-              aws ec2 describe-instances  --query 'Reservations[*].Instances[*].PublicIpAddress' --output text >> inventory.txt
               echo "Contents  of the inventory.txt file is -------"
               cat inventory.txt
-              scp -o "StrictHostKeyChecking=no" artifact.tar.gz ubuntu@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
+              # scp -o "StrictHostKeyChecking=no" artifact.tar.gz ubuntu@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
               
               ansible-playbook -i inventory.txt deploy-backend.yml
-       - destroy-environment
+       #- destroy-environment
 
   smoke-test:
     docker:
