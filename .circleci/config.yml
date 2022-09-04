@@ -368,9 +368,9 @@ jobs:
 
 workflows:
   default:
-    jobs:
+    jobs:  
       
-      - run-migrations:
+      - run-migrations
           #requires: [configure-infrastructure]
      # - deploy-frontend:
      #    requires: [run-migrations]
