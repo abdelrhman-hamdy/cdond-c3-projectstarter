@@ -14,7 +14,7 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/*
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
             aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.stack_id >>
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.stack_id >>
 
@@ -267,7 +267,7 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-    
+      - destroy-environment
   deploy-backend: 
       docker:
       - image : amazon/aws-cli
@@ -301,7 +301,7 @@ jobs:
               # scp -o "StrictHostKeyChecking=no" artifact.tar.gz ubuntu@$(tail -1 inventory.txt):/home/ubuntu/artifact.tar.gz
               
               ansible-playbook -i inventory.txt deploy-backend.yml
-       #- destroy-environment
+       - destroy-environment
 
   smoke-test:
     docker:
@@ -315,7 +315,6 @@ jobs:
             curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
             unzip awscli-bundle.zip
             ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-      - run : aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/*     
       - run: 
           name: Backend smoke test.
           command: |
@@ -340,11 +339,8 @@ jobs:
               else
                 return 1
               fi
+      - destroy-environment
       
-
-        
-       
-       
 workflows:
   default:
     jobs:
