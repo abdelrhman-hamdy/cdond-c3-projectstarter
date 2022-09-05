@@ -380,7 +380,7 @@ jobs:
       - persist_to_workspace:
             root: ~/
             paths:
-              - project/.circleci/workflowid.txt
+              - project/.circleci
       
       - run:
           name: Update cloudfront distribution
@@ -403,7 +403,7 @@ jobs:
           command : |
             yum install -y tar gzip
       - attach_workspace:
-          at: project/.circleci
+          at: ~/
       - run:
           name: Get old stack workflow id
           command: |
