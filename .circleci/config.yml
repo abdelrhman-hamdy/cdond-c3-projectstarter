@@ -339,6 +339,7 @@ jobs:
             curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
             unzip awscli-bundle.zip
             ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+  
       - run: 
           name: Backend smoke test.
           command: |
@@ -370,6 +371,17 @@ jobs:
        - image : amazon/aws-cli
     steps:
       - checkout
+      - run :
+          name : Get Old WorkFLowID
+          command : |
+            aws cloudformation \
+              list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+              --no-paginate --output text >> workflowid.txt
+      - persist_to_workspace:
+            root: ~/
+            paths:
+              - project/.circleci/workflowid.txt
+      
       - run:
           name: Update cloudfront distribution
           command: |
@@ -386,12 +398,12 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout 
+      - attach_workspace:
+          at: project/.circleci
       - run:
           name: Get old stack workflow id
           command: |
-             export OldWorkflowID=$(aws cloudformation \
-              list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-              --no-paginate --output text)
+             export OldWorkflowID=$(cat workflowid.txt)
              export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
              --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
               echo Stack names : "${STACKS[@]}"   
@@ -400,7 +412,9 @@ jobs:
           command: |
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
             then
-              # your code here
+              aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
             fi
             
 
@@ -434,5 +448,6 @@ workflows:
           requires: [deploy-frontend,deploy-backend]
       - cloudfront-update : 
           requires: [smoke-test]
-
+      - cleanup : 
+          requires:: [cloudfront-update]
 
