@@ -38,4 +38,3 @@
   roles:
     - configure-server
     - installing_node
-    - start_node_service
