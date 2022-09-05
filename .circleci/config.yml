@@ -398,6 +398,10 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout 
+      - run : 
+          name :  installing tar and  gzip
+          command : |
+            yum install -y tar gzip
       - attach_workspace:
           at: project/.circleci
       - run:
