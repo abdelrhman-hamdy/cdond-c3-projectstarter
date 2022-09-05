@@ -372,6 +372,10 @@ jobs:
     steps:
       - checkout
       - run :
+         name :  installing tar and  gzip
+         command : |
+            yum install -y tar gzip
+      - run :
           name : Get Old WorkFLowID
           command : |
             aws cloudformation \
