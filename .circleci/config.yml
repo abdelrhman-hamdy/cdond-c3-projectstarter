@@ -419,6 +419,7 @@ jobs:
       - run:
           name: Remove old stacks and files
           command: |
+            export OldWorkflowID=e63eab1
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "$OldWorkflowID" ]]
             then
               echo "udapeople-backend-$OldWorkflowID"
